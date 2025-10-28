@@ -392,129 +392,142 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
       position: relative;
     }
-    .modal-close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 28px;
-      color: #999;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .modal-close-btn:hover {
-      color: #dc2626;
-      transform: scale(1.2);
-    }
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .modal-content h2 {
-      color: #dc2626;
-      margin-bottom: 20px;
-      font-size: 2.2em;
-      font-weight: 800;
-    }
-    .modal-content i {
-      font-size: 5em;
-      margin-bottom: 20px;
-    }
-    .modal-content.warning i {
-      color: #f59e0b;
-    }
-    .modal-content.success i {
-      color: #28a745;
-    }
-    .modal-content p {
-      font-size: 1.2em;
-      line-height: 1.8;
-      color: #333;
-      margin-bottom: 15px;
-    }
-    .modal-content .rules {
-      background: #f8f9fa;
-      padding: 25px;
-      border-radius: 12px;
-      margin: 25px 0;
-      border-left: 5px solid #dc2626;
-      text-align: left;
-    }
-    .modal-content .rules h3 {
-      color: #dc2626;
-      margin-bottom: 15px;
-      font-size: 1.3em;
-      font-weight: 700;
-    }
-    .modal-content .rules ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .modal-content .rules li {
-      padding: 10px 0;
-      padding-left: 30px;
-      position: relative;
-      font-size: 1.05em;
-      line-height: 1.6;
-    }
-    .modal-content .rules li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: #28a745;
-      font-weight: bold;
-      font-size: 1.3em;
-    }
-    .search-filters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .mode-badge {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.85em;
-      font-weight: 700;
-      margin-bottom: 15px;
-      margin-right: 10px;
-    }
-    .mode-badge.read {
-      background: #d1ecf1;
-      color: #0c5460;
-    }
-    .mode-badge.edit {
-      background: #fff3cd;
-      color: #856404;
-    }
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px;
-      }
-      .header {
-        margin: -20px -20px 30px -20px;
-        padding: 30px 20px;
-      }
-      .header h1 {
-        font-size: 2em;
-      }
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      .search-filters {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<div id="modalBienvenida" class="modal">
+  <div class="modal-content success" style="max-width: 500px; padding: 30px;">
+    <button class="modal-close-btn" id="btnCerrarBienvenida">✕</button>
+    
+    <i class="fas fa-check-circle" style="font-size: 4em; color: #28a745; margin-bottom: 15px;"></i>
+    
+    <h2 style="color: #dc2626; font-size: 2em; margin-bottom: 15px;">¡Bienvenido!</h2>
+    
+    <p style="font-size: 1.1em; color: #28a745; font-weight: 600; margin-bottom: 10px;">
+      ✅ Registro exitoso
+    </p>
+    
+    <p style="font-size: 0.95em; color: #666; margin-bottom: 20px; line-height: 1.6;">
+      Sus datos han sido registrados correctamente en nuestro sistema.
+    </p>
+    
+    <!-- Acuerdos en formato compacto -->
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left; border-left: 4px solid #dc2626; max-height: 200px; overflow-y: auto;">
+      <h3 style="color: #dc2626; font-size: 0.95em; margin-bottom: 10px;">
+        <i class="fas fa-clipboard-list"></i> Acuerdos de la Urbanización
+      </h3>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Mantener cuotas al día
+        </li>
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Respetar áreas comunes
+        </li>
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Cumplir horarios establecidos
+        </li>
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Mantener limpieza en propiedad
+        </li>
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Respetar convivencia con vecinos
+        </li>
+        <li style="padding: 6px 0; font-size: 0.85em; color: #444; padding-left: 25px; position: relative;">
+          <span style="position: absolute; left: 0; color: #28a745; font-weight: bold;">✓</span>
+          Comunicar cambios de datos
+        </li>
+      </ul>
+    </div>
+    
+    <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+      ✨ Gracias por ser parte de nuestra comunidad
+    </p>
+    
+    <!-- Botones -->
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn btn-success" id="btnCerrarModalBienvenida" style="margin: 5px; flex: 1; min-width: 150px;">
+        <i class="fas fa-check"></i> Entendido
+      </button>
+      <button class="btn btn-secondary" id="btnNuevaConsulta" style="margin: 5px; flex: 1; min-width: 150px;">
+        <i class="fas fa-search"></i> Nueva Consulta
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ESTILOS ADICIONALES - AGREGAR EN LA SECCIÓN <style> -->
+<style>
+  /* Estilos para el modal mejorado */
+  #modalBienvenida .modal-content {
+    max-width: 450px;
+    padding: 30px;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  #modalBienvenida .modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+
+  #modalBienvenida .modal-close-btn:hover {
+    color: #dc2626;
+    transform: scale(1.3);
+  }
+
+  /* Scroll suave en lista de acuerdos */
+  #modalBienvenida [style*="max-height: 200px"] {
+    scrollbar-width: thin;
+    scrollbar-color: #dc2626 #f0f0f0;
+  }
+
+  #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+  }
+
+  #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 10px;
+  }
+</style>
+
+<!-- JAVASCRIPT - REEMPLAZA LOS EVENT LISTENERS EXISTENTES CON ESTOS -->
+<script>
+  // Cerrar modal bienvenida con botón X
+  document.getElementById('btnCerrarBienvenida').addEventListener('click', () => {
+    modalBienvenida.classList.remove('active');
+    resetToSearch();
+    showAlert('¡Bienvenido a Valle Real! Puede realizar una nueva consulta', 'success');
+  });
+
+  // Cerrar modal y limpiar formulario
+  document.getElementById('btnCerrarModalBienvenida').addEventListener('click', () => {
+    modalBienvenida.classList.remove('active');
+    resetToSearch();
+    showAlert('¡Registro completado! Puede realizar una nueva consulta', 'success');
+  });
+
+  // Nueva consulta desde el modal
+  document.getElementById('btnNuevaConsulta').addEventListener('click', () => {
+    modalBienvenida.classList.remove('active');
+    resetToSearch();
+    document.getElementById('dni').focus();
+  });
+</script>
 </head>
 <body>
   <div class="container">
