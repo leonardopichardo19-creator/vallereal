@@ -155,13 +155,14 @@
       margin-top: 4px;
       display: none;
     }
+    .change-indicator.show {
+      display: block;
+    }
     .change-indicator.modified {
       color: #f59e0b;
-      display: block;
     }
     .change-indicator.cleared {
       color: #ef4444;
-      display: block;
     }
     .btn {
       padding: 14px 28px;
@@ -178,14 +179,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
     .btn-primary {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -402,10 +402,18 @@
       color: #999;
       cursor: pointer;
       transition: all 0.2s;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .modal-close-btn:hover {
       color: #dc2626;
       transform: scale(1.2);
+    }
+    .modal-close-btn:focus {
+      outline: 2px solid #dc2626;
+      border-radius: 50%;
     }
     @keyframes slideUp {
       from { transform: translateY(50px); opacity: 0; }
@@ -466,27 +474,24 @@
       font-weight: bold;
       font-size: 1.3em;
     }
-    #modalBienvenida .modal-content {
+    .modal-content.compact {
       max-width: 450px;
       padding: 30px;
     }
-    #modalBienvenida .modal-close-btn {
-      top: 15px;
-      right: 15px;
-      font-size: 24px;
-    }
-    #modalBienvenida [style*="max-height: 200px"] {
+    .scrollable-list {
+      max-height: 200px;
+      overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: #dc2626 #f0f0f0;
     }
-    #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar {
+    .scrollable-list::-webkit-scrollbar {
       width: 6px;
     }
-    #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar-track {
+    .scrollable-list::-webkit-scrollbar-track {
       background: #f0f0f0;
       border-radius: 10px;
     }
-    #modalBienvenida [style*="max-height: 200px"]::-webkit-scrollbar-thumb {
+    .scrollable-list::-webkit-scrollbar-thumb {
       background: #dc2626;
       border-radius: 10px;
     }
@@ -549,8 +554,8 @@
       <p>Sistema de Gestión de Socios</p>
     </div>
 
-    <div id="alert" class="alert"></div>
-    <div class="loading" id="loading">
+    <div id="alert" class="alert" role="alert" aria-live="polite" aria-atomic="true"></div>
+    <div class="loading" id="loading" role="status" aria-live="polite">
       <div class="spinner"></div>
       <p style="font-size: 1.2em; font-weight: 600; color: #dc2626;">Procesando...</p>
     </div>
@@ -565,8 +570,9 @@
       
       <form id="formConsulta">
         <div class="form-group">
-          <label><i class="fas fa-id-card"></i> DNI (8 dígitos):</label>
-          <input type="text" id="dni" maxlength="8" pattern="\d{8}" placeholder="Ejemplo: 12345678" required />
+          <label for="dni"><i class="fas fa-id-card"></i> DNI (8 dígitos):</label>
+          <input type="text" id="dni" maxlength="8" pattern="\d{8}" placeholder="Ejemplo: 12345678" required aria-describedby="dniHelp" />
+          <small id="dniHelp" style="color: #666; display: block; margin-top: 4px;">Ingrese 8 dígitos sin espacios</small>
         </div>
         <div class="btn-group">
           <button type="submit" class="btn btn-danger">
@@ -575,6 +581,7 @@
         </div>
       </form>
     </div>
+
     <!-- Formulario de Datos -->
     <div id="formDatos" class="hidden">
       <div class="card">
@@ -586,75 +593,75 @@
         <form id="formEdicion">
           <div class="form-grid">
             <div class="form-group">
-              <label><i class="fas fa-id-card"></i> DNI:</label>
-              <input type="text" id="dniEdit" disabled />
+              <label for="dniEdit"><i class="fas fa-id-card"></i> DNI:</label>
+              <input type="text" id="dniEdit" disabled aria-label="DNI del socio" />
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-user"></i> Apellido Paterno:</label>
+              <label for="apellidoPaterno"><i class="fas fa-user"></i> Apellido Paterno:</label>
               <input type="text" id="apellidoPaterno" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar apellido paterno">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-user"></i> Apellido Materno:</label>
+              <label for="apellidoMaterno"><i class="fas fa-user"></i> Apellido Materno:</label>
               <input type="text" id="apellidoMaterno" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar apellido materno">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-user-circle"></i> Nombres:</label>
+              <label for="nombres"><i class="fas fa-user-circle"></i> Nombres:</label>
               <input type="text" id="nombres" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar nombres">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-phone"></i> Teléfono 1:</label>
-              <input type="text" id="telefono1" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <label for="telefono1"><i class="fas fa-phone"></i> Teléfono 1:</label>
+              <input type="tel" id="telefono1" disabled />
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar teléfono 1">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-mobile-alt"></i> Teléfono 2:</label>
-              <input type="text" id="telefono2" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <label for="telefono2"><i class="fas fa-mobile-alt"></i> Teléfono 2:</label>
+              <input type="tel" id="telefono2" disabled />
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar teléfono 2">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group full-width">
-              <label><i class="fas fa-map-marker-alt"></i> Dirección:</label>
+              <label for="direccion"><i class="fas fa-map-marker-alt"></i> Dirección:</label>
               <input type="text" id="direccion" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar dirección">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-ring"></i> Cónyuge:</label>
+              <label for="conyuge"><i class="fas fa-ring"></i> Cónyuge:</label>
               <input type="text" id="conyuge" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar cónyuge">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-layer-group"></i> Etapa:</label>
+              <label for="etapa"><i class="fas fa-layer-group"></i> Etapa:</label>
               <input type="text" id="etapa" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar etapa">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group full-width">
-              <label><i class="fas fa-envelope"></i> Email:</label>
+              <label for="email"><i class="fas fa-envelope"></i> Email:</label>
               <input type="email" id="email" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar email">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-money-bill-wave"></i> Pago de Cuota:</label>
+              <label for="pagoCuota"><i class="fas fa-money-bill-wave"></i> Pago de Cuota:</label>
               <select id="pagoCuota" disabled>
                 <option value="">Seleccione</option>
                 <option value="Sí">Sí - Al día</option>
@@ -663,28 +670,28 @@
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-star"></i> Puntuación:</label>
+              <label for="puntuacion"><i class="fas fa-star"></i> Puntuación:</label>
               <input type="number" id="puntuacion" min="0" max="100" disabled />
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-car"></i> Placa Vehículo 1:</label>
+              <label for="placa1"><i class="fas fa-car"></i> Placa Vehículo 1:</label>
               <input type="text" id="placa1" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar placa 1">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-car-side"></i> Placa Vehículo 2:</label>
+              <label for="placa2"><i class="fas fa-car-side"></i> Placa Vehículo 2:</label>
               <input type="text" id="placa2" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar placa 2">✕</button>
               <div class="change-indicator"></div>
             </div>
             
             <div class="form-group">
-              <label><i class="fas fa-truck"></i> Placa Vehículo 3:</label>
+              <label for="placa3"><i class="fas fa-truck"></i> Placa Vehículo 3:</label>
               <input type="text" id="placa3" disabled />
-              <button type="button" class="btn-clear" title="Limpiar">✕</button>
+              <button type="button" class="btn-clear" title="Limpiar" aria-label="Limpiar placa 3">✕</button>
               <div class="change-indicator"></div>
             </div>
           </div>
@@ -719,11 +726,12 @@
       <form id="formLoginAdmin">
         <div class="form-grid">
           <div class="form-group">
-            <label><i class="fas fa-id-badge"></i> DNI Administrador:</label>
-            <input type="text" id="adminDni" maxlength="8" pattern="\d{8}" placeholder="DNI del administrador" required />
+            <label for="adminDni"><i class="fas fa-id-badge"></i> DNI Administrador:</label>
+            <input type="text" id="adminDni" maxlength="8" pattern="\d{8}" placeholder="DNI del administrador" required aria-describedby="adminDniHelp" />
+            <small id="adminDniHelp" style="color: #666; display: block; margin-top: 4px;">8 dígitos</small>
           </div>
           <div class="form-group">
-            <label><i class="fas fa-key"></i> Contraseña:</label>
+            <label for="adminPass"><i class="fas fa-key"></i> Contraseña:</label>
             <input type="password" id="adminPass" placeholder="Contraseña" required />
           </div>
         </div>
@@ -739,7 +747,6 @@
     <div id="panelAdmin" class="hidden">
       <div class="card">
         <h3><i class="fas fa-chart-line"></i> Dashboard de Estadísticas</h3>
-        
         <div class="stats-grid">
           <div class="stat-card">
             <i class="fas fa-users"></i>
@@ -773,27 +780,27 @@
         <form id="formBusquedaAvanzada">
           <div class="search-filters">
             <div class="form-group">
-              <label><i class="fas fa-id-card"></i> DNI:</label>
+              <label for="busqDni"><i class="fas fa-id-card"></i> DNI:</label>
               <input type="text" id="busqDni" placeholder="Buscar por DNI" />
             </div>
             <div class="form-group">
-              <label><i class="fas fa-user"></i> Nombre:</label>
+              <label for="busqNombre"><i class="fas fa-user"></i> Nombre:</label>
               <input type="text" id="busqNombre" placeholder="Buscar por nombre" />
             </div>
             <div class="form-group">
-              <label><i class="fas fa-phone"></i> Teléfono:</label>
+              <label for="busqTel"><i class="fas fa-phone"></i> Teléfono:</label>
               <input type="text" id="busqTel" placeholder="Buscar por teléfono" />
             </div>
             <div class="form-group">
-              <label><i class="fas fa-map-marker-alt"></i> Dirección:</label>
+              <label for="busqDir"><i class="fas fa-map-marker-alt"></i> Dirección:</label>
               <input type="text" id="busqDir" placeholder="Buscar por dirección" />
             </div>
             <div class="form-group">
-              <label><i class="fas fa-layer-group"></i> Etapa:</label>
+              <label for="busqEtapa"><i class="fas fa-layer-group"></i> Etapa:</label>
               <input type="text" id="busqEtapa" placeholder="Buscar por etapa" />
             </div>
             <div class="form-group">
-              <label><i class="fas fa-envelope"></i> Email:</label>
+              <label for="busqEmail"><i class="fas fa-envelope"></i> Email:</label>
               <input type="text" id="busqEmail" placeholder="Buscar por email" />
             </div>
           </div>
@@ -831,11 +838,11 @@
   </div>
 
   <!-- Modal Advertencia Modificación -->
-  <div id="modalAdvertencia" class="modal">
+  <div id="modalAdvertencia" class="modal" role="dialog" aria-labelledby="modalAdvertenciaTitle" aria-modal="true">
     <div class="modal-content warning">
-      <button class="modal-close-btn" id="btnCerrarAdvertencia">✕</button>
+      <button class="modal-close-btn" id="closeModalAdvertencia" aria-label="Cerrar modal de advertencia">✕</button>
       <i class="fas fa-exclamation-triangle"></i>
-      <h2>¡Importante!</h2>
+      <h2 id="modalAdvertenciaTitle">¡Importante!</h2>
       <p style="font-size: 1.3em; font-weight: 600; color: #f59e0b;">Modo Edición Activado</p>
       
       <div class="rules">
@@ -864,14 +871,14 @@
     </div>
   </div>
 
-  <!-- Modal Bienvenida (VERSIÓN LIMPIA) -->
-  <div id="modalBienvenida" class="modal">
-    <div class="modal-content success" style="max-width: 450px; padding: 30px;">
-      <button class="modal-close-btn" id="btnCerrarBienvenida">✕</button>
+  <!-- Modal Bienvenida -->
+  <div id="modalBienvenida" class="modal" role="dialog" aria-labelledby="modalBienvenidaTitle" aria-modal="true">
+    <div class="modal-content compact success">
+      <button class="modal-close-btn" id="closeModalBienvenida" aria-label="Cerrar modal de bienvenida">✕</button>
       
       <i class="fas fa-check-circle" style="font-size: 4em; color: #28a745; margin-bottom: 15px;"></i>
       
-      <h2 style="color: #dc2626; font-size: 2em; margin-bottom: 15px;">¡Bienvenido!</h2>
+      <h2 id="modalBienvenidaTitle" style="color: #dc2626; font-size: 2em; margin-bottom: 15px;">¡Bienvenido!</h2>
       
       <p style="font-size: 1.1em; color: #28a745; font-weight: 600; margin-bottom: 10px;">
         ✅ Registro exitoso
@@ -882,7 +889,7 @@
       </p>
       
       <!-- Acuerdos en formato compacto -->
-      <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left; border-left: 4px solid #dc2626; max-height: 200px; overflow-y: auto;">
+      <div class="scrollable-list" style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left; border-left: 4px solid #dc2626;">
         <h3 style="color: #dc2626; font-size: 0.95em; margin-bottom: 10px;">
           <i class="fas fa-clipboard-list"></i> Acuerdos de la Urbanización
         </h3>
@@ -920,7 +927,7 @@
       
       <!-- Botones -->
       <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button class="btn btn-success" id="btnCerrarModalBienvenida" style="margin: 5px; flex: 1; min-width: 150px;">
+        <button class="btn btn-success" id="btnEntendidoBienvenida" style="margin: 5px; flex: 1; min-width: 150px;">
           <i class="fas fa-check"></i> Entendido
         </button>
         <button class="btn btn-secondary" id="btnNuevaConsulta" style="margin: 5px; flex: 1; min-width: 150px;">
@@ -931,23 +938,32 @@
   </div>
 
   <!-- Modal Actualización -->
-  <div id="modalActualizacion" class="modal">
+  <div id="modalActualizacion" class="modal" role="dialog" aria-labelledby="modalActualizacionTitle" aria-modal="true">
     <div class="modal-content success">
-      <button class="modal-close-btn" id="btnCerrarActualizacion">✕</button>
+      <button class="modal-close-btn" id="closeModalActualizacion" aria-label="Cerrar modal de actualización">✕</button>
       <i class="fas fa-check-circle"></i>
-      <h2>¡Datos Actualizados!</h2>
+      <h2 id="modalActualizacionTitle">¡Datos Actualizados!</h2>
       <p style="font-size: 1.3em; font-weight: 600; color: #28a745;">Actualización exitosa</p>
       <p>Sus datos han sido actualizados correctamente en nuestro sistema.</p>
       <p style="margin-top: 20px;">Recuerde mantener su información siempre actualizada.</p>
       
-      <button class="btn btn-success" id="btnCerrarModalActualizar" style="margin-top: 20px;">
+      <button class="btn btn-success" id="btnAceptarActualizacion" style="margin-top: 20px;">
         <i class="fas fa-check"></i> Aceptar
       </button>
     </div>
   </div>
-  <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk5i94kV-2IKaXC1pntjHmfqk22Y9Y0KGr0f9zg8fN8IKIEGmYCUd9fBZ2KOOGzVyPJg/exec';
 
+  <script>
+    // ============================================================================
+    // CONFIGURACIÓN GLOBAL Y CONSTANTES
+    // ============================================================================
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk5i94kV-2IKaXC1pntjHmfqk22Y9Y0KGr0f9zg8fN8IKIEGmYCUd9fBZ2KOOGzVyPJg/exec';
+    const ALERT_TIMEOUT = 5000;
+    const DEBOUNCE_DELAY = 300;
+    
+    // ============================================================================
+    // SELECCIÓN DE ELEMENTOS DEL DOM
+    // ============================================================================
     const alertBox = document.getElementById('alert');
     const loading = document.getElementById('loading');
     const formConsulta = document.getElementById('formConsulta');
@@ -957,44 +973,119 @@
     const modalBienvenida = document.getElementById('modalBienvenida');
     const modalActualizacion = document.getElementById('modalActualizacion');
     const modalAdvertencia = document.getElementById('modalAdvertencia');
-
+    const loginAdmin = document.getElementById('loginAdmin');
+    const panelAdmin = document.getElementById('panelAdmin');
+    
+    // ============================================================================
+    // ESTADO GLOBAL
+    // ============================================================================
     let todosSocios = [];
     let chartInstance = null;
     let socioActual = null;
-    let datosOriginales = {};
+    let datosOriginales = null;
     let esNuevoSocio = false;
     let enModoEdicion = false;
-
+    let debounceTimer = null;
+    
+    // Array de IDs de campos editables
+    const camposEditables = [
+      'apellidoPaterno', 'apellidoMaterno', 'nombres', 'telefono1', 'telefono2',
+      'direccion', 'conyuge', 'etapa', 'email', 'pagoCuota', 'placa1', 'placa2', 'placa3', 'puntuacion'
+    ];
+    
+    // ============================================================================
+    // FUNCIONES UTILITARIAS
+    // ============================================================================
+    
+    /**
+     * Muestra una alerta al usuario
+     * @param {string} message - Mensaje a mostrar
+     * @param {string} type - Tipo de alerta: 'success', 'error', 'info'
+     */
     function showAlert(message, type = 'success') {
-      alertBox.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle') + '"></i> ' + message;
-      alertBox.className = 'alert ' + type;
+      const iconClass = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+      alertBox.innerHTML = `<i class="fas fa-${iconClass}"></i> ${message}`;
+      alertBox.className = `alert ${type}`;
       alertBox.style.display = 'block';
-      setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+      
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+      }, ALERT_TIMEOUT);
     }
-
+    
+    /**
+     * Muestra u oculta el spinner de carga
+     * @param {boolean} show - true para mostrar, false para ocultar
+     */
     function showLoading(show) {
-      loading.className = show ? 'loading active' : 'loading';
+      loading.classList.toggle('active', show);
     }
-
+    
+    /**
+     * Valida un DNI
+     * @param {string} dni - DNI a validar
+     * @returns {boolean} true si es válido
+     */
+    function validarDNI(dni) {
+      return /^\d{8}$/.test(dni) && dni !== '00000000';
+    }
+    
+    /**
+     * Restablece la vista a la sección de búsqueda
+     */
     function resetToSearch() {
       formDatos.classList.add('hidden');
       consultaSection.classList.remove('hidden');
       formConsulta.reset();
       clearForm();
       socioActual = null;
-      datosOriginales = {};
+      datosOriginales = null;
       esNuevoSocio = false;
       enModoEdicion = false;
+      limpiarIndicadoresCambios();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    // Consultar Socio
+    
+    /**
+     * Activa el modo de edición del formulario
+     */
+    function activarModoEdicion() {
+      enModoEdicion = true;
+      setFormDisabled(false);
+      document.getElementById('btnGroupView').style.display = 'none';
+      document.getElementById('btnGroupEdit').style.display = 'flex';
+      document.getElementById('modeBadge').textContent = 'Modo Edición';
+      document.getElementById('modeBadge').className = 'mode-badge edit';
+      document.getElementById('apellidoPaterno').focus();
+    }
+    
+    /**
+     * Desactiva el modo de edición del formulario
+     */
+    function desactivarModoEdicion() {
+      enModoEdicion = false;
+      fillForm(datosOriginales);
+      setFormDisabled(true);
+      document.getElementById('btnGroupView').style.display = 'flex';
+      document.getElementById('btnGroupEdit').style.display = 'none';
+      document.getElementById('modeBadge').textContent = 'Modo Lectura';
+      document.getElementById('modeBadge').className = 'mode-badge read';
+      limpiarIndicadoresCambios();
+    }
+    
+    // ============================================================================
+    // MANEJADORES DE FORMULARIOS
+    // ============================================================================
+    
+    /**
+     * Consultar un socio por DNI
+     */
     formConsulta.addEventListener('submit', async (e) => {
       e.preventDefault();
       const dni = document.getElementById('dni').value.trim();
       
-      if (!/^\d{8}$/.test(dni)) {
-        showAlert('El DNI debe tener exactamente 8 dígitos', 'error');
+      if (!validarDNI(dni)) {
+        showAlert('El DNI debe tener exactamente 8 dígitos válidos', 'error');
         return;
       }
       
@@ -1005,86 +1096,48 @@
         const data = await resp.json();
         
         if (data.success) {
+          // Socio encontrado
           socioActual = data.socio;
           datosOriginales = JSON.parse(JSON.stringify(data.socio));
           esNuevoSocio = false;
           enModoEdicion = false;
+          
           fillForm(data.socio);
           document.getElementById('formTitle').textContent = 'Datos del Socio';
           document.getElementById('btnModificar').style.display = 'inline-flex';
-          document.getElementById('btnGroupView').style.display = 'flex';
-          document.getElementById('btnGroupEdit').style.display = 'none';
           setFormDisabled(true);
-          document.getElementById('modeBadge').textContent = 'Modo Lectura';
-          document.getElementById('modeBadge').className = 'mode-badge read';
+          desactivarModoEdicion();
+          
           showAlert('Socio encontrado en el sistema', 'success');
           formDatos.classList.remove('hidden');
           consultaSection.classList.add('hidden');
         } else {
+          // Socio no encontrado - Nuevo registro
           socioActual = { dni };
           datosOriginales = { dni };
           esNuevoSocio = true;
-          enModoEdicion = true;
+          
           clearForm();
           document.getElementById('dniEdit').value = dni;
           document.getElementById('formTitle').textContent = 'Registrar Nuevo Socio';
           document.getElementById('btnModificar').style.display = 'none';
-          document.getElementById('btnGroupView').style.display = 'none';
-          document.getElementById('btnGroupEdit').style.display = 'flex';
-          setFormDisabled(false);
-          document.getElementById('modeBadge').textContent = 'Modo Registro';
-          document.getElementById('modeBadge').className = 'mode-badge edit';
+          
+          activarModoEdicion();
+          
           showAlert('DNI no encontrado. Complete el formulario para registrarse', 'info');
           formDatos.classList.remove('hidden');
           consultaSection.classList.add('hidden');
         }
       } catch (error) {
-        showAlert('Error al consultar: ' + error.message, 'error');
+        showAlert(`Error al consultar: ${error.message}`, 'error');
       } finally {
         showLoading(false);
       }
     });
-
-    document.getElementById('btnModificar').addEventListener('click', () => {
-      modalAdvertencia.classList.add('active');
-    });
-
-    document.getElementById('btnConfirmarModificacion').addEventListener('click', () => {
-      modalAdvertencia.classList.remove('active');
-      enModoEdicion = true;
-      setFormDisabled(false);
-      document.getElementById('btnGroupView').style.display = 'none';
-      document.getElementById('btnGroupEdit').style.display = 'flex';
-      document.getElementById('modeBadge').textContent = 'Modo Edición';
-      document.getElementById('modeBadge').className = 'mode-badge edit';
-      showAlert('Modo edición activado. Realice los cambios necesarios', 'info');
-      document.getElementById('apellidoPaterno').focus();
-    });
-
-    document.getElementById('btnCancelarModificacion').addEventListener('click', () => {
-      modalAdvertencia.classList.remove('active');
-    });
-
-    document.getElementById('btnCerrarAdvertencia').addEventListener('click', () => {
-      modalAdvertencia.classList.remove('active');
-    });
-
-    document.getElementById('btnCancelarEdicion').addEventListener('click', () => {
-      if (esNuevoSocio) {
-        resetToSearch();
-      } else {
-        enModoEdicion = false;
-        fillForm(datosOriginales);
-        setFormDisabled(true);
-        document.getElementById('btnGroupView').style.display = 'flex';
-        document.getElementById('btnGroupEdit').style.display = 'none';
-        document.getElementById('modeBadge').textContent = 'Modo Lectura';
-        document.getElementById('modeBadge').className = 'mode-badge read';
-        limpiarIndicadoresCambios();
-        showAlert('Edición cancelada. Se restauraron los datos originales', 'info');
-      }
-    });
-
+    
+    /**
+     * Guardar cambios del formulario
+     */
     formEdicion.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -1105,21 +1158,27 @@
         placa3: document.getElementById('placa3').value.trim(),
         puntuacion: document.getElementById('puntuacion').value.trim()
       };
-
-      if (!socio.dni || !/^\d{8}$/.test(socio.dni)) {
+      
+      // Validación básica
+      if (!validarDNI(socio.dni)) {
         showAlert('DNI inválido', 'error');
         return;
       }
-
+      
+      if (!socio.nombres || !socio.apellidoPaterno) {
+        showAlert('Los campos nombre y apellido son obligatorios', 'error');
+        return;
+      }
+      
       showLoading(true);
-
+      
       try {
         const formData = new URLSearchParams();
         formData.append('action', 'actualizar');
         for (const key in socio) {
           formData.append(key, socio[key]);
         }
-
+        
         const resp = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           body: formData
@@ -1138,68 +1197,140 @@
             modalActualizacion.classList.add('active');
           }
         } else {
-          showAlert(data.message, 'error');
+          showAlert(data.message || 'Error al guardar', 'error');
         }
       } catch (error) {
-        showAlert('Error al guardar: ' + error.message, 'error');
+        showAlert(`Error al guardar: ${error.message}`, 'error');
       } finally {
         showLoading(false);
       }
     });
-
-    document.getElementById('btnCerrarModalBienvenida').addEventListener('click', () => {
-      modalBienvenida.classList.remove('active');
-      resetToSearch();
-      showAlert('¡Registro completado! Puede realizar una nueva consulta', 'success');
+    
+    /**
+     * Manejador del formulario de login administrador
+     */
+    document.getElementById('formLoginAdmin').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dni = document.getElementById('adminDni').value.trim();
+      const pass = document.getElementById('adminPass').value;
+      
+      if (!validarDNI(dni)) {
+        showAlert('DNI inválido', 'error');
+        return;
+      }
+      
+      showLoading(true);
+      
+      try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'loginAdmin');
+        formData.append('dni', dni);
+        formData.append('pass', pass);
+        
+        const resp = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await resp.json();
+        
+        if (data.success) {
+          showAlert('Login exitoso. Bienvenido Administrador', 'success');
+          loginAdmin.classList.add('hidden');
+          panelAdmin.classList.remove('hidden');
+          consultaSection.classList.add('hidden');
+          cargarDatosAdmin();
+        } else {
+          showAlert(data.message || 'Error de autenticación', 'error');
+        }
+      } catch (error) {
+        showAlert(`Error en login: ${error.message}`, 'error');
+      } finally {
+        showLoading(false);
+      }
     });
-
-    document.getElementById('btnCerrarBienvenida').addEventListener('click', () => {
-      modalBienvenida.classList.remove('active');
-      resetToSearch();
-      showAlert('¡Bienvenido a Valle Real! Puede realizar una nueva consulta', 'success');
+    
+    // ============================================================================
+    // MANEJADORES DE BOTONES - EDICIÓN
+    // ============================================================================
+    
+    document.getElementById('btnModificar').addEventListener('click', () => {
+      modalAdvertencia.classList.add('active');
     });
-
-    document.getElementById('btnNuevaConsulta').addEventListener('click', () => {
-      modalBienvenida.classList.remove('active');
-      resetToSearch();
-      document.getElementById('dni').focus();
+    
+    document.getElementById('btnConfirmarModificacion').addEventListener('click', () => {
+      modalAdvertencia.classList.remove('active');
+      activarModoEdicion();
+      showAlert('Modo edición activado. Realice los cambios necesarios', 'info');
     });
-
-    document.getElementById('btnCerrarModalActualizar').addEventListener('click', () => {
-      modalActualizacion.classList.remove('active');
-      setFormDisabled(true);
-      document.getElementById('btnGroupView').style.display = 'flex';
-      document.getElementById('btnGroupEdit').style.display = 'none';
-      document.getElementById('modeBadge').textContent = 'Modo Lectura';
-      document.getElementById('modeBadge').className = 'mode-badge read';
-      limpiarIndicadoresCambios();
-      showAlert('Sus datos han sido actualizados correctamente', 'success');
+    
+    document.getElementById('btnCancelarModificacion').addEventListener('click', () => {
+      modalAdvertencia.classList.remove('active');
     });
-
-    document.getElementById('btnCerrarActualizacion').addEventListener('click', () => {
-      modalActualizacion.classList.remove('active');
-      setFormDisabled(true);
-      document.getElementById('btnGroupView').style.display = 'flex';
-      document.getElementById('btnGroupEdit').style.display = 'none';
-      document.getElementById('modeBadge').textContent = 'Modo Lectura';
-      document.getElementById('modeBadge').className = 'mode-badge read';
-      limpiarIndicadoresCambios();
-      showAlert('Sus datos han sido actualizados correctamente', 'success');
+    
+    document.getElementById('closeModalAdvertencia').addEventListener('click', () => {
+      modalAdvertencia.classList.remove('active');
     });
-
+    
+    document.getElementById('btnCancelarEdicion').addEventListener('click', () => {
+      if (esNuevoSocio) {
+        resetToSearch();
+      } else {
+        desactivarModoEdicion();
+        showAlert('Edición cancelada. Se restauraron los datos originales', 'info');
+      }
+    });
+    
     document.getElementById('btnCancelar').addEventListener('click', () => {
       resetToSearch();
     });
-
+    
+    // ============================================================================
+    // MANEJADORES DE MODALES - SIMPLIFICADOS
+    // ============================================================================
+    
+    /**
+     * Cierra el modal de bienvenida y resetea
+     */
+    function cerrarModalBienvenida() {
+      modalBienvenida.classList.remove('active');
+      resetToSearch();
+      showAlert('¡Bienvenido a Valle Real! Puede realizar una nueva consulta', 'success');
+    }
+    
+    document.getElementById('btnEntendidoBienvenida').addEventListener('click', cerrarModalBienvenida);
+    document.getElementById('closeModalBienvenida').addEventListener('click', cerrarModalBienvenida);
+    
+    document.getElementById('btnNuevaConsulta').addEventListener('click', () => {
+      cerrarModalBienvenida();
+      document.getElementById('dni').focus();
+    });
+    
+    /**
+     * Cierra el modal de actualización
+     */
+    function cerrarModalActualizacion() {
+      modalActualizacion.classList.remove('active');
+      desactivarModoEdicion();
+      showAlert('Sus datos han sido actualizados correctamente', 'success');
+    }
+    
+    document.getElementById('btnAceptarActualizacion').addEventListener('click', cerrarModalActualizacion);
+    document.getElementById('closeModalActualizacion').addEventListener('click', cerrarModalActualizacion);
+    
+    // ============================================================================
+    // MANEJADORES DE BOTONES - DESCARGAS
+    // ============================================================================
+    
     document.getElementById('btnDescargarPDF').addEventListener('click', () => {
       if (!socioActual || !socioActual.dni) {
         showAlert('No hay datos del socio para generar reporte', 'error');
         return;
       }
-
+      
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-
+      
+      // Encabezado
       doc.setFillColor(220, 38, 38);
       doc.rect(0, 0, 210, 45, 'F');
       doc.setTextColor(255, 255, 255);
@@ -1208,12 +1339,13 @@
       doc.text('REPORTE DE SOCIO', 105, 20, { align: 'center' });
       doc.setFontSize(16);
       doc.text('Urbanización Valle Real', 105, 32, { align: 'center' });
-
+      
+      // Contenido
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(12);
       let y = 60;
       const leftMargin = 20;
-
+      
       const agregarCampo = (label, value) => {
         if (value) {
           doc.setFont(undefined, 'bold');
@@ -1225,7 +1357,7 @@
           y += 10;
         }
       };
-
+      
       agregarCampo('DNI:', socioActual.dni);
       agregarCampo('Apellidos:', `${socioActual.apellidoPaterno || ''} ${socioActual.apellidoMaterno || ''}`);
       agregarCampo('Nombres:', socioActual.nombres);
@@ -1240,56 +1372,25 @@
       agregarCampo('Placa 2:', socioActual.placa2);
       agregarCampo('Placa 3:', socioActual.placa3);
       agregarCampo('Puntuación:', socioActual.puntuacion);
-
+      
+      // Pie de página
       doc.setFontSize(10);
       doc.setTextColor(128, 128, 128);
-      const fecha = new Date().toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' });
+      const fecha = new Date().toLocaleDateString('es-PE', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
       doc.text(`Generado el ${fecha}`, 105, 280, { align: 'center' });
-
+      
       doc.save(`Socio_${socioActual.dni}_${Date.now()}.pdf`);
       showAlert('PDF descargado correctamente', 'success');
     });
-
-    document.getElementById('formLoginAdmin').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const dni = document.getElementById('adminDni').value.trim();
-      const pass = document.getElementById('adminPass').value;
-
-      if (!/^\d{8}$/.test(dni)) {
-        showAlert('DNI inválido', 'error');
-        return;
-      }
-
-      showLoading(true);
-
-      try {
-        const formData = new URLSearchParams();
-        formData.append('action', 'loginAdmin');
-        formData.append('dni', dni);
-        formData.append('pass', pass);
-
-        const resp = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await resp.json();
-
-        if (data.success) {
-          showAlert('Login exitoso. Bienvenido Administrador', 'success');
-          document.getElementById('loginAdmin').classList.add('hidden');
-          document.getElementById('panelAdmin').classList.remove('hidden');
-          consultaSection.classList.add('hidden');
-          cargarDatosAdmin();
-        } else {
-          showAlert(data.message, 'error');
-        }
-      } catch (error) {
-        showAlert('Error en login: ' + error.message, 'error');
-      } finally {
-        showLoading(false);
-      }
-    });
-
+    
+    // ============================================================================
+    // FUNCIONES DE ADMINISTRADOR
+    // ============================================================================
+    
     async function cargarDatosAdmin() {
       showLoading(true);
       try {
@@ -1305,38 +1406,38 @@
           showAlert('Error al cargar datos', 'error');
         }
       } catch (error) {
-        showAlert('Error al cargar datos: ' + error.message, 'error');
+        showAlert(`Error al cargar datos: ${error.message}`, 'error');
       } finally {
         showLoading(false);
       }
     }
-
+    
     function actualizarEstadisticas() {
       const total = todosSocios.length;
       const conTel = todosSocios.filter(s => s.telefono1).length;
       const sinTel = total - conTel;
       const conCony = todosSocios.filter(s => s.conyuge).length;
-
+      
       document.getElementById('totalSocios').textContent = total;
       document.getElementById('conDatos').textContent = conTel;
       document.getElementById('sinDatos').textContent = sinTel;
       document.getElementById('conConyuge').textContent = conCony;
     }
-
+    
     function crearGrafico() {
       const ctx = document.getElementById('chartSocios');
       
       if (chartInstance) {
         chartInstance.destroy();
       }
-
+      
       const conTel = todosSocios.filter(s => s.telefono1).length;
       const sinTel = todosSocios.length - conTel;
       const conCony = todosSocios.filter(s => s.conyuge).length;
       const sinCony = todosSocios.length - conCony;
       const pagaSi = todosSocios.filter(s => s.pagoCuota === 'Sí').length;
       const pagaNo = todosSocios.filter(s => s.pagoCuota === 'No').length;
-
+      
       chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -1377,71 +1478,118 @@
         }
       });
     }
-
+    
+    // ============================================================================
+    // BÚSQUEDA AVANZADA
+    // ============================================================================
+    
     document.getElementById('formBusquedaAvanzada').addEventListener('submit', (e) => {
       e.preventDefault();
       realizarBusqueda();
     });
-
+    
     document.getElementById('btnMostrarTodos').addEventListener('click', () => {
-      document.getElementById('busqDni').value = '';
-      document.getElementById('busqNombre').value = '';
-      document.getElementById('busqTel').value = '';
-      document.getElementById('busqDir').value = '';
-      document.getElementById('busqEtapa').value = '';
-      document.getElementById('busqEmail').value = '';
+      // Limpiar todos los campos de búsqueda
+      ['busqDni', 'busqNombre', 'busqTel', 'busqDir', 'busqEtapa', 'busqEmail'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
       mostrarResultadosBusqueda(todosSocios);
     });
-
+    
     function realizarBusqueda() {
-      const dni = document.getElementById('busqDni').value.toLowerCase();
-      const nombre = document.getElementById('busqNombre').value.toLowerCase();
-      const tel = document.getElementById('busqTel').value;
-      const dir = document.getElementById('busqDir').value.toLowerCase();
-      const etapa = document.getElementById('busqEtapa').value.toLowerCase();
-      const email = document.getElementById('busqEmail').value.toLowerCase();
-
+      const dni = document.getElementById('busqDni').value.toLowerCase().trim();
+      const nombre = document.getElementById('busqNombre').value.toLowerCase().trim();
+      const tel = document.getElementById('busqTel').value.trim();
+      const dir = document.getElementById('busqDir').value.toLowerCase().trim();
+      const etapa = document.getElementById('busqEtapa').value.toLowerCase().trim();
+      const email = document.getElementById('busqEmail').value.toLowerCase().trim();
+      
       let resultados = todosSocios;
-
-      if (dni) resultados = resultados.filter(s => s.dni && s.dni.includes(dni));
-      if (nombre) resultados = resultados.filter(s => (`${s.nombres || ''} ${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}`).toLowerCase().includes(nombre));
-      if (tel) resultados = resultados.filter(s => (s.telefono1 && s.telefono1.includes(tel)) || (s.telefono2 && s.telefono2.includes(tel)));
-      if (dir) resultados = resultados.filter(s => s.direccion && s.direccion.toLowerCase().includes(dir));
-      if (etapa) resultados = resultados.filter(s => s.etapa && s.etapa.toLowerCase().includes(etapa));
-      if (email) resultados = resultados.filter(s => s.email && s.email.toLowerCase().includes(email));
-
+      
+      if (dni) {
+        resultados = resultados.filter(s => s.dni && s.dni.includes(dni));
+      }
+      if (nombre) {
+        resultados = resultados.filter(s => {
+          const nombreCompleto = `${s.nombres || ''} ${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}`.toLowerCase();
+          return nombreCompleto.includes(nombre);
+        });
+      }
+      if (tel) {
+        resultados = resultados.filter(s => 
+          (s.telefono1 && s.telefono1.includes(tel)) || 
+          (s.telefono2 && s.telefono2.includes(tel))
+        );
+      }
+      if (dir) {
+        resultados = resultados.filter(s => s.direccion && s.direccion.toLowerCase().includes(dir));
+      }
+      if (etapa) {
+        resultados = resultados.filter(s => s.etapa && s.etapa.toLowerCase().includes(etapa));
+      }
+      if (email) {
+        resultados = resultados.filter(s => s.email && s.email.toLowerCase().includes(email));
+      }
+      
       mostrarResultadosBusqueda(resultados);
     }
-
+    
     function mostrarResultadosBusqueda(resultados) {
       const contenedor = document.getElementById('resultadosBusqueda');
       
       if (resultados.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #666; padding: 30px; font-size: 1.1em;"><i class="fas fa-search" style="font-size: 3em; display: block; margin-bottom: 15px; color: #dc2626;"></i>No se encontraron resultados</p>';
+        contenedor.innerHTML = `<p style="text-align: center; color: #666; padding: 30px; font-size: 1.1em;">
+          <i class="fas fa-search" style="font-size: 3em; display: block; margin-bottom: 15px; color: #dc2626;"></i>
+          No se encontraron resultados
+        </p>`;
         return;
       }
-
-      let html = `<div style="background: #dc2626; color: white; padding: 15px; border-radius: 10px; margin-top: 25px; display: flex; align-items: center; gap: 10px; font-weight: 600;"><i class="fas fa-list-ul"></i> <span>Resultados: ${resultados.length} socio(s)</span></div>`;
       
-      html += `<div style="overflow-x: auto; margin-top: 15px;"><table><thead><tr><th>DNI</th><th>Nombre Completo</th><th>Teléfono 1</th><th>Teléfono 2</th><th>Dirección</th><th>Etapa</th><th>Cónyuge</th></tr></thead><tbody>`;
-
+      let html = `<div style="background: #dc2626; color: white; padding: 15px; border-radius: 10px; margin-top: 25px; display: flex; align-items: center; gap: 10px; font-weight: 600;">
+        <i class="fas fa-list-ul"></i> 
+        <span>Resultados: ${resultados.length} socio(s)</span>
+      </div>`;
+      
+      html += `<div style="overflow-x: auto; margin-top: 15px;"><table><thead><tr>
+        <th>DNI</th>
+        <th>Nombre Completo</th>
+        <th>Teléfono 1</th>
+        <th>Teléfono 2</th>
+        <th>Dirección</th>
+        <th>Etapa</th>
+        <th>Cónyuge</th>
+      </tr></thead><tbody>`;
+      
       resultados.forEach(s => {
-        html += `<tr><td><strong>${s.dni || ''}</strong></td><td>${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}, ${s.nombres || ''}</td><td>${s.telefono1 || '-'}</td><td>${s.telefono2 || '-'}</td><td>${s.direccion || '-'}</td><td>${s.etapa || '-'}</td><td>${s.conyuge || '-'}</td></tr>`;
+        html += `<tr>
+          <td><strong>${s.dni || ''}</strong></td>
+          <td>${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}, ${s.nombres || ''}</td>
+          <td>${s.telefono1 || '-'}</td>
+          <td>${s.telefono2 || '-'}</td>
+          <td>${s.direccion || '-'}</td>
+          <td>${s.etapa || '-'}</td>
+          <td>${s.conyuge || '-'}</td>
+        </tr>`;
       });
-
+      
       html += '</tbody></table></div>';
       contenedor.innerHTML = html;
     }
-
+    
+    // ============================================================================
+    // EXPORTACIÓN DE REPORTES
+    // ============================================================================
+    
     document.getElementById('btnReportePDF').addEventListener('click', () => {
       if (todosSocios.length === 0) {
         showAlert('No hay datos para generar reporte', 'error');
         return;
       }
-
+      
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('landscape');
-
+      
+      // Encabezado
       doc.setFillColor(220, 38, 38);
       doc.rect(0, 0, 297, 40, 'F');
       doc.setTextColor(255, 255, 255);
@@ -1450,45 +1598,75 @@
       doc.text('LISTA DE SOCIOS - VALLE REAL', 148.5, 18, { align: 'center' });
       doc.setFontSize(14);
       doc.text(`Total: ${todosSocios.length} socios registrados`, 148.5, 30, { align: 'center' });
-
-      const tableData = todosSocios.map(s => [s.dni || '', `${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}`, s.nombres || '', s.telefono1 || '-', s.direccion || '-', s.etapa || '-', s.pagoCuota || '-']);
-
+      
+      // Datos de la tabla
+      const tableData = todosSocios.map(s => [
+        s.dni || '',
+        `${s.apellidoPaterno || ''} ${s.apellidoMaterno || ''}`,
+        s.nombres || '',
+        s.telefono1 || '-',
+        s.direccion || '-',
+        s.etapa || '-',
+        s.pagoCuota || '-'
+      ]);
+      
       doc.autoTable({
         startY: 45,
         head: [['DNI', 'Apellidos', 'Nombres', 'Teléfono', 'Dirección', 'Etapa', 'Pago']],
         body: tableData,
         theme: 'grid',
-        headStyles: { fillColor: [220, 38, 38], fontSize: 10, fontStyle: 'bold', halign: 'center' },
+        headStyles: { 
+          fillColor: [220, 38, 38], 
+          fontSize: 10, 
+          fontStyle: 'bold', 
+          halign: 'center' 
+        },
         bodyStyles: { fontSize: 9 },
         alternateRowStyles: { fillColor: [245, 245, 245] }
       });
-
+      
       doc.save(`Lista_Socios_Valle_Real_${Date.now()}.pdf`);
       showAlert('PDF descargado correctamente', 'success');
     });
-
+    
     document.getElementById('btnReporteExcel').addEventListener('click', () => {
       if (todosSocios.length === 0) {
         showAlert('No hay datos para generar reporte', 'error');
         return;
       }
-
-      const excelData = todosSocios.map(s => ({ 'DNI': s.dni || '', 'Apellido Paterno': s.apellidoPaterno || '', 'Apellido Materno': s.apellidoMaterno || '', 'Nombres': s.nombres || '', 'Teléfono 1': s.telefono1 || '', 'Teléfono 2': s.telefono2 || '', 'Dirección': s.direccion || '', 'Etapa': s.etapa || '', 'Cónyuge': s.conyuge || '', 'Email': s.email || '', 'Pago Cuota': s.pagoCuota || '', 'Placa 1': s.placa1 || '', 'Placa 2': s.placa2 || '', 'Placa 3': s.placa3 || '', 'Puntuación': s.puntuacion || '' }));
-
+      
+      const excelData = todosSocios.map(s => ({
+        'DNI': s.dni || '',
+        'Apellido Paterno': s.apellidoPaterno || '',
+        'Apellido Materno': s.apellidoMaterno || '',
+        'Nombres': s.nombres || '',
+        'Teléfono 1': s.telefono1 || '',
+        'Teléfono 2': s.telefono2 || '',
+        'Dirección': s.direccion || '',
+        'Etapa': s.etapa || '',
+        'Cónyuge': s.conyuge || '',
+        'Email': s.email || '',
+        'Pago Cuota': s.pagoCuota || '',
+        'Placa 1': s.placa1 || '',
+        'Placa 2': s.placa2 || '',
+        'Placa 3': s.placa3 || '',
+        'Puntuación': s.puntuacion || ''
+      }));
+      
       const ws = XLSX.utils.json_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Socios Valle Real');
-
+      
       XLSX.writeFile(wb, `Lista_Socios_Valle_Real_${Date.now()}.xlsx`);
       showAlert('Excel descargado correctamente', 'success');
     });
-
+    
     document.getElementById('btnDescargarGrafico').addEventListener('click', () => {
       if (!chartInstance) {
         showAlert('No hay gráfico para descargar', 'error');
         return;
       }
-
+      
       const canvas = document.getElementById('chartSocios');
       const url = canvas.toDataURL('image/png');
       const link = document.createElement('a');
@@ -1497,47 +1675,57 @@
       link.click();
       showAlert('Gráfico descargado correctamente', 'success');
     });
-
+    
     document.getElementById('btnCerrarSesion').addEventListener('click', () => {
-      document.getElementById('panelAdmin').classList.add('hidden');
-      document.getElementById('loginAdmin').classList.remove('hidden');
+      panelAdmin.classList.add('hidden');
+      loginAdmin.classList.remove('hidden');
       consultaSection.classList.remove('hidden');
       todosSocios = [];
       document.getElementById('resultadosBusqueda').innerHTML = '';
+      
+      // Limpiar todos los campos de búsqueda
+      ['busqDni', 'busqNombre', 'busqTel', 'busqDir', 'busqEtapa', 'busqEmail'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      
       document.getElementById('formLoginAdmin').reset();
+      
       if (chartInstance) {
         chartInstance.destroy();
         chartInstance = null;
       }
+      
       showAlert('Sesión cerrada exitosamente', 'success');
     });
-
-    const camposEditables = ['apellidoPaterno', 'apellidoMaterno', 'nombres', 'telefono1', 'telefono2', 'direccion', 'conyuge', 'etapa', 'email', 'pagoCuota', 'placa1', 'placa2', 'placa3', 'puntuacion'];
-
-    camposEditables.forEach(campoId => {
-      const input = document.getElementById(campoId);
-      input.addEventListener('change', () => detectarCambio(campoId));
-      input.addEventListener('input', () => detectarCambio(campoId));
-    });
-
+    
+    // ============================================================================
+    // GESTIÓN DE CAMBIOS EN CAMPOS
+    // ============================================================================
+    
+    /**
+     * Detecta y marca los cambios en los campos
+     * @param {string} campoId - ID del campo
+     */
     function detectarCambio(campoId) {
       const input = document.getElementById(campoId);
       const valorActual = input.value.trim();
-      const valorOriginal = (datosOriginales[campoId] || '').trim();
+      const valorOriginal = (datosOriginales && datosOriginales[campoId]) ? 
+        datosOriginales[campoId].toString().trim() : '';
+      
       const formGroup = input.closest('.form-group');
       const indicator = formGroup.querySelector('.change-indicator');
-
+      
       if (valorActual !== valorOriginal) {
         if (valorActual === '') {
           formGroup.classList.add('cleared');
           formGroup.classList.remove('modified');
           indicator.textContent = '🗑️ Campo borrado';
-          indicator.className = 'change-indicator cleared';
+          indicator.className = 'change-indicator cleared show';
         } else {
           formGroup.classList.add('modified');
           formGroup.classList.remove('cleared');
           indicator.textContent = '✏️ Modificado';
-          indicator.className = 'change-indicator modified';
+          indicator.className = 'change-indicator modified show';
         }
       } else {
         formGroup.classList.remove('modified', 'cleared');
@@ -1545,38 +1733,70 @@
         indicator.textContent = '';
       }
     }
-
+    
+    /**
+     * Limpia todos los indicadores de cambios visuales
+     */
     function limpiarIndicadoresCambios() {
       camposEditables.forEach(campoId => {
-        const formGroup = document.getElementById(campoId).closest('.form-group');
-        formGroup.classList.remove('modified', 'cleared');
-        const indicator = formGroup.querySelector('.change-indicator');
-        indicator.className = 'change-indicator';
-        indicator.textContent = '';
+        const element = document.getElementById(campoId);
+        if (element) {
+          const formGroup = element.closest('.form-group');
+          formGroup.classList.remove('modified', 'cleared');
+          const indicator = formGroup.querySelector('.change-indicator');
+          if (indicator) {
+            indicator.className = 'change-indicator';
+            indicator.textContent = '';
+          }
+        }
       });
     }
-
+    
+    // Agregar listeners de cambio a campos editables (solo con change, no con input para evitar spam)
+    camposEditables.forEach(campoId => {
+      const input = document.getElementById(campoId);
+      if (input) {
+        input.addEventListener('change', () => detectarCambio(campoId));
+      }
+    });
+    
+    // ============================================================================
+    // GESTIÓN DE BOTONES CLEAR
+    // ============================================================================
+    
     document.querySelectorAll('.btn-clear').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        e.preventDefault();
+        e.stopPropagation();
         const input = btn.closest('.form-group').querySelector('input, select');
         input.value = '';
         input.dispatchEvent(new Event('change', { bubbles: true }));
         input.focus();
       });
-
+      
       const input = btn.closest('.form-group').querySelector('input, select');
-      input.addEventListener('focus', () => {
-        if (enModoEdicion) {
-          btn.style.display = 'flex';
-        }
-      });
-      input.addEventListener('blur', () => {
-        btn.style.display = 'none';
-      });
+      if (input) {
+        input.addEventListener('focus', () => {
+          if (enModoEdicion) {
+            btn.style.display = 'flex';
+          }
+        });
+        input.addEventListener('blur', () => {
+          btn.style.display = 'none';
+        });
+      }
     });
-
+    
+    // ============================================================================
+    // FUNCIONES DE GESTIÓN DE FORMULARIOS
+    // ============================================================================
+    
+    /**
+     * Rellena el formulario con los datos del socio
+     * @param {object} socio - Objeto con los datos del socio
+     */
     function fillForm(socio) {
+      if (!socio) return;
+      
       document.getElementById('dniEdit').value = socio.dni || '';
       document.getElementById('apellidoPaterno').value = socio.apellidoPaterno || '';
       document.getElementById('apellidoMaterno').value = socio.apellidoMaterno || '';
@@ -1593,8 +1813,12 @@
       document.getElementById('placa3').value = socio.placa3 || '';
       document.getElementById('puntuacion').value = socio.puntuacion || '';
     }
-
+    
+    /**
+     * Limpia todos los campos del formulario
+     */
     function clearForm() {
+      document.getElementById('dniEdit').value = '';
       document.getElementById('apellidoPaterno').value = '';
       document.getElementById('apellidoMaterno').value = '';
       document.getElementById('nombres').value = '';
@@ -1610,12 +1834,28 @@
       document.getElementById('placa3').value = '';
       document.getElementById('puntuacion').value = '';
     }
-
+    
+    /**
+     * Habilita o deshabilita todos los campos editables
+     * @param {boolean} disabled - true para deshabilitar, false para habilitar
+     */
     function setFormDisabled(disabled) {
       camposEditables.forEach(campoId => {
-        document.getElementById(campoId).disabled = disabled;
+        const element = document.getElementById(campoId);
+        if (element) {
+          element.disabled = disabled;
+        }
       });
     }
+    
+    // ============================================================================
+    // INICIALIZACIÓN
+    // ============================================================================
+    
+    // Enfocar en el campo DNI al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('dni').focus();
+    });
   </script>
 </body>
 </html>
